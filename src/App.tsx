@@ -535,10 +535,12 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-zinc-900">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-amber-500 flex items-center justify-center font-black text-white text-xs shadow-md">
-                R69
-              </div>
-              <span className="font-black text-white text-sm tracking-wider">redex<span className="text-violet-500">69</span></span>
+              <img 
+                src="https://i.ibb.co/7tDpdC8J/1787700407311-2.jpg" 
+                alt="Purple69 Logo" 
+                className="w-8 h-8 rounded-xl object-cover shadow-md" 
+              />
+              <span className="font-black text-white text-sm tracking-wider">Purple<span className="text-violet-500">69</span></span>
             </div>
 
             <div className="flex flex-wrap items-center gap-6 text-xs font-medium text-zinc-400">
@@ -548,7 +550,7 @@ export default function HomePage() {
               <button onClick={handleToggleFilterDrawer} className="hover:text-violet-400 transition">
                 Filtros Avanzados
               </button>
-              <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Política de Privacidad de redex69: Todos los pagos son totalmente discretos, seguros y encriptados bajo protocolo SSL.'); }} className="hover:text-white transition">
+              <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Política de Privacidad de Purple69: Todos los pagos son totalmente discretos, seguros y encriptados bajo protocolo SSL.'); }} className="hover:text-white transition">
                 Privacidad & Discreción
               </a>
               <a href="#terms" onClick={(e) => { e.preventDefault(); alert('Términos y Condiciones: Acceso exclusivo para adultos mayores de 18 años (18+).'); }} className="hover:text-white transition">
@@ -558,7 +560,7 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-zinc-600">
-            <p>© 2026 redex69. Todos los derechos reservados. Plataforma profesional de transmisiones en vivo en alta definición.</p>
+            <p>© 2026 Purple69. Todos los derechos reservados. Plataforma profesional de transmisiones en vivo en alta definición.</p>
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1 text-emerald-500">
                 <ShieldCheck className="w-3.5 h-3.5" /> 256-Bit SSL Encrypted

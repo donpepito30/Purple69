@@ -57,12 +57,14 @@ export const Navbar: React.FC<NavbarProps> = memo(({
           {/* Logo & Live Status */}
           <div className="flex items-center gap-3 shrink-0">
             <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => setFilters((prev) => ({ ...prev, gender: 'all', search: '', tags: [] }))}>
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-amber-500 flex items-center justify-center shadow-lg shadow-violet-950/60 group-hover:scale-105 transition">
-                <span className="font-black text-white text-base tracking-tighter">R69</span>
-              </div>
+              <img 
+                src="https://i.ibb.co/7tDpdC8J/1787700407311-2.jpg" 
+                alt="Purple69 Logo" 
+                className="w-10 h-10 rounded-2xl object-cover shadow-lg shadow-violet-950/60 group-hover:scale-105 transition" 
+              />
               <div className="flex flex-col">
                 <span className="font-black text-lg tracking-wider text-white flex items-center">
-                  redex<span className="text-violet-500">69</span>
+                  Purple<span className="text-violet-500">69</span>
                 </span>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
