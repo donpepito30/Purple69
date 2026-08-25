@@ -1,0 +1,10 @@
+name = "red69x"
+main = "dist/_worker.js"
+compatibility_date = "2024-09-25"
+compatibility_flags = ["nodejs_compat"]
+
+# For Cloudflare Workers (Asset Binding)
+assets = { directory = "./dist", binding = "ASSETS" }
+
+# For Cloudflare Pages
+pages_build_output_dir = "dist"

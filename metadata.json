@@ -1,0 +1,8 @@
+{
+  "name": "3Redex69",
+  "description": "Plataforma de transmisión en vivo para adultos",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
