@@ -57,14 +57,14 @@ export const CompactModelCard: React.FC<CompactModelCardProps> = memo(({
 
           <button
             onClick={(e) => onToggleFavorite(e, model)}
-            className={`p-1 rounded-md backdrop-blur-md transition border ${
+            className={`w-8 h-8 flex items-center justify-center rounded-lg backdrop-blur-md transition border ${
               isFavorite
                 ? 'bg-violet-600 border-violet-500 text-white'
                 : 'bg-zinc-950/70 border-zinc-800/80 text-zinc-400 hover:text-violet-400'
             }`}
             title="Favorito"
           >
-            <Heart className={`w-3 h-3 ${isFavorite ? 'fill-white' : ''}`} />
+            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} />
           </button>
         </div>
 

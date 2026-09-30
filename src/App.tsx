@@ -26,7 +26,8 @@ import {
   Globe,
   Loader2,
   Shuffle,
-  ChevronDown
+  ChevronDown,
+  SlidersHorizontal
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -41,6 +42,7 @@ export default function HomePage() {
 
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [isBuyTokensOpen, setIsBuyTokensOpen] = useState(false);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   // Filter State
   const [filters, setFilters] = useState<FilterState>({
@@ -217,7 +219,11 @@ export default function HomePage() {
 
   // Filtered and Sorted Models List
   const filteredModels = useMemo(() => {
-    return models
+    let result = models;
+    if (showFavoritesOnly) {
+      result = result.filter((m) => favorites.includes(m.id));
+    }
+    return result
       .filter((m) => {
         // Search Query (Búsqueda de texto manual por el usuario)
         if (filters.search) {
@@ -240,7 +246,7 @@ export default function HomePage() {
         if (filters.sortBy === 'tokens') return a.tokensPerMin - b.tokensPerMin;
         return (b.viewersCount || 0) - (a.viewersCount || 0);
       });
-  }, [models, filters]);
+  }, [models, filters, showFavoritesOnly, favorites]);
 
   // Dynamic random rotation state for compact grid & pagination
   const [shuffleSeed, setShuffleSeed] = useState<number>(0);
@@ -312,7 +318,7 @@ export default function HomePage() {
   }, [models]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-violet-600 selection:text-white">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-violet-600 selection:text-white pb-20 md:pb-0">
       
 
 
@@ -405,37 +411,61 @@ export default function HomePage() {
             <p className="text-xs text-zinc-400 font-bold">Conectando con la API de Stripcash en tiempo real...</p>
           </div>
         ) : filteredModels.length === 0 ? (
-          /* Empty State if no filters match */
-          <div className="py-20 text-center space-y-4 max-w-md mx-auto">
-            <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500">
-              <SearchX className="w-8 h-8" />
+          showFavoritesOnly ? (
+            /* Special Empty State for Favorites */
+            <div className="py-20 text-center space-y-4 max-w-md mx-auto animate-in fade-in">
+              <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-violet-500">
+                <Heart className="w-8 h-8 fill-current" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-extrabold text-base text-white">No tienes modelos favoritas guardadas</h3>
+                <p className="text-xs text-zinc-400">
+                  Haz clic en el ícono de corazón de cualquier transmisión en vivo para agregarla a tus favoritas y verla aquí al instante.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowFavoritesOnly(false)}
+                className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-black text-xs transition"
+              >
+                Explorar Cámaras En Vivo
+              </button>
             </div>
-            <div className="space-y-1">
-              <h3 className="font-extrabold text-base text-white">No se encontraron modelos coincidente</h3>
-              <p className="text-xs text-zinc-400">
-                Prueba cambiando los criterios de búsqueda o limpiando las etiquetas seleccionadas.
-              </p>
+          ) : (
+            /* Empty State if no filters match */
+            <div className="py-20 text-center space-y-4 max-w-md mx-auto">
+              <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500">
+                <SearchX className="w-8 h-8" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-extrabold text-base text-white">No se encontraron modelos coincidente</h3>
+                <p className="text-xs text-zinc-400">
+                  Prueba cambiando los criterios de búsqueda o limpiando las etiquetas seleccionadas.
+                </p>
+              </div>
+              <button
+                onClick={() =>
+                  setFilters({
+                    gender: 'all',
+                    tags: [],
+                    search: '',
+                    minAge: 18,
+                    maxAge: 60,
+                    status: 'online',
+                    sortBy: 'viewers',
+                    isLovenseOnly: false,
+                    isHdOnly: false,
+                    language: 'all',
+                    ethnicity: 'all',
+                    hairColor: 'all',
+                    bodyType: 'all',
+                  })
+                }
+                className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs"
+              >
+                Restablecer Todos los Filtros
+              </button>
             </div>
-            <button
-              onClick={() =>
-                setFilters({
-                  gender: 'all',
-                  tags: [],
-                  search: '',
-                  minAge: 18,
-                  maxAge: 60,
-                  status: 'online',
-                  sortBy: 'viewers',
-                  isLovenseOnly: false,
-                  isHdOnly: false,
-                  language: 'all',
-                })
-              }
-              className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs"
-            >
-              Restablecer Todos los Filtros
-            </button>
-          </div>
+          )
         ) : (
           <div className="space-y-10">
             {/* 2. COMPACT BALANCED GRID WITH RANDOM ROTATION */}
@@ -445,13 +475,13 @@ export default function HomePage() {
                   <div className="flex items-center gap-2">
                     <div>
                       <h2 className="text-sm font-extrabold text-white tracking-wide uppercase flex items-center gap-2">
-                        Explorar Cámaras En Vivo
+                        {showFavoritesOnly ? 'Mis Cámaras Favoritas' : 'Explorar Cámaras En Vivo'}
                         <span className="text-zinc-400 font-normal text-xs lowercase">
                           ({compactModelsToDisplay.length} de {remainingModels.length})
                         </span>
                       </h2>
                       <p className="text-[11px] text-zinc-400">
-                        Navegación rápida en alta definición y con respuesta interactiva
+                        {showFavoritesOnly ? 'Tus transmisiones guardadas que se encuentran en vivo ahora' : 'Navegación rápida en alta definición y con respuesta interactiva'}
                       </p>
                     </div>
                   </div>
@@ -571,6 +601,62 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      {/* Mobile Fixed Bottom Navigation Bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-900 pb-safe block md:hidden shadow-[0_-8px_20px_rgba(0,0,0,0.6)]">
+        <div className="grid grid-cols-4 items-center h-16 max-w-lg mx-auto">
+          {/* Tab 1: Cámaras (Home) */}
+          <button
+            onClick={() => {
+              setShowFavoritesOnly(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`flex flex-col items-center justify-center h-full transition-colors ${
+              !showFavoritesOnly ? 'text-violet-500' : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Radio className="w-5 h-5" />
+            <span className="text-[10px] font-bold mt-1 tracking-tight">Cámaras</span>
+          </button>
+
+          {/* Tab 2: Favoritas */}
+          <button
+            onClick={() => {
+              setShowFavoritesOnly(true);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`flex flex-col items-center justify-center h-full transition-colors relative ${
+              showFavoritesOnly ? 'text-violet-500' : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Heart className={`w-5 h-5 ${favorites.length > 0 && showFavoritesOnly ? 'fill-violet-500' : ''}`} />
+            <span className="text-[10px] font-bold mt-1 tracking-tight">Favoritas</span>
+            {favorites.length > 0 && (
+              <span className="absolute top-2.5 right-6 w-4 h-4 rounded-full bg-violet-600 text-[9px] font-black text-white flex items-center justify-center shadow border border-zinc-950">
+                {favorites.length}
+              </span>
+            )}
+          </button>
+
+          {/* Tab 3: Filtros */}
+          <button
+            onClick={() => setIsFilterDrawerOpen(true)}
+            className="flex flex-col items-center justify-center h-full text-zinc-400 hover:text-zinc-200 transition-colors"
+          >
+            <SlidersHorizontal className="w-5 h-5" />
+            <span className="text-[10px] font-bold mt-1 tracking-tight">Filtros</span>
+          </button>
+
+          {/* Tab 4: Comprar */}
+          <button
+            onClick={() => setIsBuyTokensOpen(true)}
+            className="flex flex-col items-center justify-center h-full text-zinc-400 hover:text-zinc-200 transition-colors"
+          >
+            <Coins className="w-5 h-5 text-amber-500" />
+            <span className="text-[10px] font-bold mt-1 tracking-tight">Comprar</span>
+          </button>
+        </div>
+      </div>
 
     </div>
   );

@@ -37,9 +37,15 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
-      <div className="bg-zinc-950 border-l border-zinc-800 w-full max-w-md h-full flex flex-col p-6 shadow-2xl overflow-y-auto animate-in slide-in-from-right">
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex justify-end items-end md:items-stretch" onClick={onClose}>
+      <div 
+        className="bg-zinc-950 border-t border-x md:border-t-0 md:border-x-0 md:border-l border-zinc-800 w-full md:max-w-md h-[85vh] md:h-full rounded-t-3xl md:rounded-t-none flex flex-col p-6 shadow-2xl overflow-y-auto animate-in slide-in-from-bottom md:slide-in-from-right duration-300"
+        onClick={(e) => e.stopPropagation()}
+      >
         
+        {/* Grab Handle for Mobile */}
+        <div className="w-12 h-1.5 bg-zinc-800 rounded-full mx-auto mb-4 md:hidden shrink-0" />
+
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
           <div className="flex items-center gap-2">
@@ -47,7 +53,7 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
             <h2 className="font-extrabold text-base text-white">Filtros Avanzados</h2>
           </div>
 
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400 hover:text-white">
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400 hover:text-white" title="Cerrar filtros">
             <X className="w-5 h-5" />
           </button>
         </div>

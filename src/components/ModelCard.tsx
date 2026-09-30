@@ -163,14 +163,14 @@ export const ModelCard: React.FC<ModelCardProps> = memo(({
 
           <button
             onClick={(e) => onToggleFavorite(e, model)}
-            className={`p-1.5 rounded-full backdrop-blur-md transition border ${
+            className={`w-9 h-9 flex items-center justify-center rounded-full backdrop-blur-md transition border ${
               isFavorite
                 ? 'bg-violet-600 border-violet-500 text-white'
                 : 'bg-zinc-950/60 border-zinc-800 text-zinc-300 hover:text-violet-400'
             }`}
             title="Guardar en Favoritos"
           >
-            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} />
+            <Heart className={`w-4 h-4 ${isFavorite ? 'fill-white' : ''}`} />
           </button>
         </div>
 
@@ -258,7 +258,7 @@ export const ModelCard: React.FC<ModelCardProps> = memo(({
         </div>
 
         {/* Action CTA */}
-        <button className="mt-2 w-full py-2 rounded-xl bg-violet-600/20 hover:bg-violet-600 text-violet-400 hover:text-white border border-violet-500/30 hover:border-violet-500 font-bold text-xs transition-all flex items-center justify-center gap-1.5 group-hover:shadow-lg group-hover:shadow-violet-950/30">
+        <button className="mt-2 w-full h-11 rounded-xl bg-violet-600/20 hover:bg-violet-600 text-violet-400 hover:text-white border border-violet-500/30 hover:border-violet-500 font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 group-hover:shadow-lg group-hover:shadow-violet-950/30">
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Ver Stream En Vivo</span>
         </button>
