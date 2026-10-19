@@ -85,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = memo(({
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <input
                 type="text"
-                placeholder="Buscar por modelo, nacionalidad o tema..."
+                placeholder="Buscar modelo o tema..."
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
                 className="w-full bg-zinc-900/90 text-sm text-zinc-100 placeholder-zinc-500 pl-10 pr-9 py-2 rounded-full border border-zinc-800 focus:border-violet-500/80 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all"
@@ -168,16 +168,15 @@ export const Navbar: React.FC<NavbarProps> = memo(({
                   <div className="flex items-center justify-between pb-2 mb-2 border-b border-zinc-800">
                     <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
                       <Heart className="w-3.5 h-3.5 text-violet-500 fill-violet-500" />
-                      Guardados ({favoriteModels.length})
+                      Favoritas ({favoriteModels.length})
                     </span>
                     <button onClick={() => setShowFavorites(false)} className="text-zinc-500 hover:text-white">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                   {favoriteModels.length === 0 ? (
-                    <div className="text-center py-6 text-zinc-500 text-xs">
-                      No has guardado modelos favoritas aún.
-                      <br />¡Haz clic en el corazón de cualquier modelo!
+                    <div className="text-center py-5 text-zinc-500 text-xs">
+                      Sin favoritas guardadas.
                     </div>
                   ) : (
                     <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
@@ -243,7 +242,7 @@ export const Navbar: React.FC<NavbarProps> = memo(({
                 onClick={onOpenBuyTokens}
                 className="bg-gradient-to-r from-amber-500 to-violet-600 hover:from-amber-400 hover:to-violet-500 text-zinc-950 font-bold text-xs px-2.5 py-1.5 rounded-lg transition shadow-md shadow-amber-950/20"
               >
-                + Comprar
+                Comprar
               </button>
             </div>
 
@@ -260,7 +259,7 @@ export const Navbar: React.FC<NavbarProps> = memo(({
             <input
               type="text"
               autoFocus
-              placeholder="Buscar por modelo, país o tema..."
+              placeholder="Buscar..."
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
               className="w-full bg-zinc-900 text-sm text-zinc-100 placeholder-zinc-500 pl-10 pr-9 py-2.5 rounded-full border border-zinc-800 focus:border-violet-500/80 outline-none"

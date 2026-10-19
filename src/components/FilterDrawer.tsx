@@ -50,10 +50,10 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
         <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="w-5 h-5 text-violet-500" />
-            <h2 className="font-extrabold text-base text-white">Filtros Avanzados</h2>
+            <h2 className="font-extrabold text-base text-white">Filtros</h2>
           </div>
 
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400 hover:text-white" title="Cerrar filtros">
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400 hover:text-white" title="Cerrar">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -63,13 +63,13 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
           
           {/* Ordenar Por */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Ordenar Modelos</label>
+            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Ordenar</label>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { id: 'viewers', label: 'Más Espectadores' },
-                { id: 'rank', label: 'Top Ranking' },
-                { id: 'rating', label: 'Mejor Valoración' },
-                { id: 'tokens', label: 'Menor Tarifa TK' },
+                { id: 'viewers', label: 'Espectadores' },
+                { id: 'rank', label: 'Ranking' },
+                { id: 'rating', label: 'Calificación' },
+                { id: 'tokens', label: 'Tarifa TK' },
               ].map((opt) => (
                 <button
                   key={opt.id}
@@ -88,7 +88,7 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
 
           {/* Quick Feature Toggles */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Características Especiales</label>
+            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Especiales</label>
             <div className="space-y-2">
               <label
                 onClick={() => setFilters((prev) => ({ ...prev, isLovenseOnly: !prev.isLovenseOnly }))}
@@ -96,7 +96,7 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
               >
                 <div className="flex items-center gap-2">
                   <Zap className="w-4 h-4 text-amber-400" />
-                  <span className="text-xs font-bold text-white">Solo con Juguete Lovense Interactivo</span>
+                  <span className="text-xs font-bold text-white">Lovense Interactivo</span>
                 </div>
                 <div
                   className={`w-5 h-5 rounded-md flex items-center justify-center border ${
@@ -113,7 +113,7 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
               >
                 <div className="flex items-center gap-2">
                   <Video className="w-4 h-4 text-violet-400" />
-                  <span className="text-xs font-bold text-white">Solo Transmisión HD / 4K</span>
+                  <span className="text-xs font-bold text-white">Calidad HD / 4K</span>
                 </div>
                 <div
                   className={`w-5 h-5 rounded-md flex items-center justify-center border ${
@@ -128,13 +128,13 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
 
           {/* Idioma */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Idioma Hablado</label>
+            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Idioma</label>
             <select
               value={filters.language}
               onChange={(e) => setFilters((prev) => ({ ...prev, language: e.target.value }))}
               className="w-full bg-zinc-900 text-xs text-white p-3 rounded-2xl border border-zinc-800 outline-none text-center"
             >
-              <option value="all">Todos los idiomas</option>
+              <option value="all">Todos</option>
               <option value="Español">Español</option>
               <option value="Inglés">Inglés</option>
               <option value="Portugués">Portugués</option>
@@ -207,17 +207,17 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
         <div className="pt-4 border-t border-zinc-800 space-y-2">
           <button
             onClick={onClose}
-            className="w-full py-3 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-extrabold text-xs shadow-lg shadow-violet-950/40"
+            className="w-full py-3 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-lg shadow-violet-950/40"
           >
-            Ver {totalResults} Modelos Coincidentes
+            Ver {totalResults} cámaras
           </button>
 
           <button
             onClick={handleReset}
-            className="w-full py-2 text-zinc-400 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5"
+            className="w-full py-2 text-zinc-400 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Restablecer Filtros</span>
+            <span>Limpiar filtros</span>
           </button>
         </div>
 

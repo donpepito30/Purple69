@@ -152,26 +152,17 @@ export const SecurityGate: React.FC<SecurityGateProps> = ({
 
           {/* Lockout Body */}
           <div className="text-center space-y-4 my-6">
-            <div className="w-20 h-20 mx-auto rounded-3xl bg-red-950/40 border-2 border-red-600/50 flex items-center justify-center text-red-400 shadow-xl shadow-red-950/50">
-              <ShieldAlert className="w-10 h-10 animate-pulse" />
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-red-950/40 border border-red-600/50 flex items-center justify-center text-red-400 shadow-lg shadow-red-950/50">
+              <ShieldAlert className="w-8 h-8 animate-pulse" />
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Tu prueba de 30 minutos ha finalizado
+            <h2 className="text-2xl font-black text-white tracking-tight">
+              Prueba Finalizada
             </h2>
 
-            <p className="text-zinc-300 text-sm leading-relaxed max-w-md mx-auto">
-              El período de prueba gratuita para este dispositivo ha concluido. <strong className="text-red-400 font-bold">No se permite más el acceso temporal</strong> a las transmisiones y funciones de Purple69.
+            <p className="text-zinc-300 text-xs leading-relaxed max-w-sm mx-auto">
+              El tiempo de prueba de 30 minutos ha concluido para este dispositivo. Introduce la clave de acceso para continuar.
             </p>
-
-            <div className="p-3.5 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 text-left">
-              <div className="flex items-start gap-3">
-                <Lock className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
-                <p className="text-xs text-zinc-300">
-                  Para desbloquear el acceso ilimitado o si eres el administrador, introduce la <strong>clave de autorización de seguridad</strong>.
-                </p>
-              </div>
-            </div>
           </div>
 
           {/* Master Unlock Form */}
@@ -281,32 +272,32 @@ export const SecurityGate: React.FC<SecurityGateProps> = ({
               </span>
             </div>
             
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Control de Acceso Seguro
+            <h1 className="text-2xl font-black text-white tracking-tight">
+              Acceso Seguro
             </h1>
-            <p className="text-xs sm:text-sm text-zinc-300 max-w-sm mx-auto leading-relaxed">
-              Plataforma privada de streaming y entretenimiento en vivo. Elige tu modalidad de ingreso para continuar:
+            <p className="text-xs text-zinc-300 max-w-sm mx-auto">
+              Selecciona tu modo de ingreso:
             </p>
           </div>
 
           {/* Choice 1: Start 30-min Trial */}
           <div className="space-y-4">
-            <div className="p-5 rounded-2xl bg-gradient-to-b from-zinc-900/90 to-zinc-900/40 border-2 border-violet-600/40 hover:border-violet-500 transition-all shadow-lg shadow-violet-950/20 group">
-              <div className="flex items-start gap-3.5 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center text-violet-400 shrink-0 group-hover:scale-105 transition">
-                  <Clock className="w-5 h-5" />
+            <div className="p-4 rounded-2xl bg-gradient-to-b from-zinc-900/90 to-zinc-900/40 border-2 border-violet-600/40 hover:border-violet-500 transition-all shadow-lg shadow-violet-950/20 group">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center text-violet-400 shrink-0">
+                  <Clock className="w-4 h-4" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-extrabold text-white">
-                      Prueba Gratuita para Usuario Externo
+                    <h3 className="text-sm font-bold text-white">
+                      Prueba Gratuita
                     </h3>
-                    <span className="px-2 py-0.5 rounded-full bg-violet-600/30 border border-violet-500/40 text-violet-300 text-[10px] font-black uppercase">
-                      30 Minutos
+                    <span className="px-2 py-0.5 rounded-full bg-violet-600/30 text-violet-300 text-[10px] font-bold uppercase">
+                      30 Min
                     </span>
                   </div>
-                  <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
-                    Acceso completo a todas las cámaras HD, filtros y modelos en vivo durante 30 minutos continuos.
+                  <p className="text-xs text-zinc-400 mt-0.5">
+                    Acceso completo a transmisiones HD.
                   </p>
                 </div>
               </div>
@@ -314,16 +305,16 @@ export const SecurityGate: React.FC<SecurityGateProps> = ({
               <button
                 onClick={handleStartTrial}
                 disabled={isVerifying}
-                className="w-full h-11 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2 shadow-lg shadow-violet-900/40 cursor-pointer"
+                className="w-full h-10 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs uppercase transition flex items-center justify-center gap-2 shadow-md shadow-violet-900/40 cursor-pointer"
               >
-                <Sparkles className="w-4 h-4 text-violet-200" />
-                <span>Iniciar Prueba de 30 Minutos</span>
-                <ArrowRight className="w-4 h-4" />
+                <Sparkles className="w-3.5 h-3.5 text-violet-200" />
+                <span>Iniciar Prueba</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
             {/* Choice 2: Master Access Key */}
-            <div className="p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition">
+            <div className="p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition">
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
@@ -331,10 +322,10 @@ export const SecurityGate: React.FC<SecurityGateProps> = ({
                   </div>
                   <div>
                     <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                      Acceso Maestro / Propietario
+                      Acceso Maestro
                     </h3>
                     <p className="text-[11px] text-zinc-400">
-                      Acceso ilimitado permanente sin límite de tiempo.
+                      Acceso ilimitado con clave.
                     </p>
                   </div>
                 </div>

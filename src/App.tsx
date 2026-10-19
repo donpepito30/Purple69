@@ -399,8 +399,8 @@ export default function HomePage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-violet-500" />
                 </span>
-                <h2 className="text-xl font-black text-white tracking-tight">
-                  Modelos <span className="text-violet-500">Destacadas</span>
+                <h2 className="text-lg font-black text-white tracking-tight">
+                  <span className="text-violet-500">Destacadas</span>
                 </h2>
               </div>
               
@@ -431,28 +431,28 @@ export default function HomePage() {
       )}
 
       {/* Main Grid Content */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
         
         {/* Results Counter & Active Filter Tags */}
         <div className="flex items-center justify-between mb-6 pb-2 border-b border-zinc-900">
           <div className="flex items-center gap-2 text-xs font-bold text-zinc-400">
-            <span>Mostrando <strong className="text-white">{filteredModels.length}</strong> transmisiones activas</span>
+            <span><strong className="text-white">{filteredModels.length}</strong> en vivo</span>
             {filters.tags.length > 0 && (
               <span className="text-violet-400">({filters.tags.join(', ')})</span>
             )}
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-zinc-500 font-semibold hidden sm:inline">Ordenar por:</span>
+            <span className="text-zinc-500 font-semibold hidden sm:inline">Ordenar:</span>
             <select
               value={filters.sortBy}
               onChange={(e) => setFilters((prev) => ({ ...prev, sortBy: e.target.value as any }))}
               className="bg-zinc-900 text-zinc-200 text-xs font-bold px-3 py-1.5 rounded-xl border border-zinc-800 outline-none"
             >
-              <option value="viewers">Más Populares</option>
-              <option value="rank">Ranking Top</option>
-              <option value="rating">Mejor Calificación</option>
-              <option value="tokens">Menor Precio TK</option>
+              <option value="viewers">Populares</option>
+              <option value="rank">Ranking</option>
+              <option value="rating">Calificación</option>
+              <option value="tokens">Precio TK</option>
             </select>
           </div>
         </div>
@@ -460,39 +460,39 @@ export default function HomePage() {
         {/* Loading Spinner Skeleton state */}
         {isLoading && models.length === 0 ? (
           <div className="py-20 text-center space-y-4">
-            <Loader2 className="w-10 h-10 text-violet-500 animate-spin mx-auto" />
-            <p className="text-xs text-zinc-400 font-bold">Conectando con la API de Stripcash en tiempo real...</p>
+            <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto" />
+            <p className="text-xs text-zinc-400 font-medium">Cargando transmisiones...</p>
           </div>
         ) : filteredModels.length === 0 ? (
           showFavoritesOnly ? (
             /* Special Empty State for Favorites */
-            <div className="py-20 text-center space-y-4 max-w-md mx-auto animate-in fade-in">
-              <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-violet-500">
-                <Heart className="w-8 h-8 fill-current" />
+            <div className="py-20 text-center space-y-3 max-w-md mx-auto animate-in fade-in">
+              <div className="w-14 h-14 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-violet-500">
+                <Heart className="w-7 h-7 fill-current" />
               </div>
               <div className="space-y-1">
-                <h3 className="font-extrabold text-base text-white">No tienes modelos favoritas guardadas</h3>
+                <h3 className="font-bold text-sm text-white">Sin favoritas guardadas</h3>
                 <p className="text-xs text-zinc-400">
-                  Haz clic en el ícono de corazón de cualquier transmisión en vivo para agregarla a tus favoritas y verla aquí al instante.
+                  Toca el corazón en cualquier transmisión para verla aquí.
                 </p>
               </div>
               <button
                 onClick={() => setShowFavoritesOnly(false)}
-                className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-black text-xs transition"
+                className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs transition"
               >
-                Explorar Cámaras En Vivo
+                Explorar Cámaras
               </button>
             </div>
           ) : (
             /* Empty State if no filters match */
-            <div className="py-20 text-center space-y-4 max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500">
-                <SearchX className="w-8 h-8" />
+            <div className="py-20 text-center space-y-3 max-w-md mx-auto">
+              <div className="w-14 h-14 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500">
+                <SearchX className="w-7 h-7" />
               </div>
               <div className="space-y-1">
-                <h3 className="font-extrabold text-base text-white">No se encontraron modelos coincidente</h3>
+                <h3 className="font-bold text-sm text-white">Sin resultados</h3>
                 <p className="text-xs text-zinc-400">
-                  Prueba cambiando los criterios de búsqueda o limpiando las etiquetas seleccionadas.
+                  Prueba con otros términos o limpia los filtros.
                 </p>
               </div>
               <button
@@ -515,7 +515,7 @@ export default function HomePage() {
                 }
                 className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs"
               >
-                Restablecer Todos los Filtros
+                Limpiar filtros
               </button>
             </div>
           )
@@ -524,32 +524,22 @@ export default function HomePage() {
             {/* 2. COMPACT BALANCED GRID WITH RANDOM ROTATION */}
             {remainingModels.length > 0 && (
               <section className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <h2 className="text-sm font-extrabold text-white tracking-wide uppercase flex items-center gap-2">
-                        {showFavoritesOnly ? 'Mis Cámaras Favoritas' : 'Explorar Cámaras En Vivo'}
-                        <span className="text-zinc-400 font-normal text-xs lowercase">
-                          ({compactModelsToDisplay.length} de {remainingModels.length})
-                        </span>
-                      </h2>
-                      <p className="text-[11px] text-zinc-400">
-                        {showFavoritesOnly ? 'Tus transmisiones guardadas que se encuentran en vivo ahora' : 'Navegación rápida en alta definición y con respuesta interactiva'}
-                      </p>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-2">
+                    {showFavoritesOnly ? 'Favoritas' : 'En Vivo'}
+                    <span className="text-zinc-500 font-normal text-xs lowercase">
+                      ({compactModelsToDisplay.length})
+                    </span>
+                  </h2>
 
-                  <div className="flex items-center gap-2">
-                    {/* Random Shuffle Button */}
-                    <button
-                      onClick={handleShuffleCompact}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-950/40 hover:bg-violet-900/60 border border-violet-800/60 text-xs font-bold text-violet-300 transition hover:scale-105 active:scale-95 shadow"
-                      title="Mezclar y rotar aleatoriamente la lista de cámaras"
-                    >
-                      <Shuffle className="w-3.5 h-3.5 text-violet-400" />
-                      <span>Rotar Cámaras Aleatorias</span>
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleShuffleCompact}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 transition"
+                    title="Rotar aleatoriamente"
+                  >
+                    <Shuffle className="w-3.5 h-3.5 text-violet-400" />
+                    <span>Rotar</span>
+                  </button>
                 </div>
 
                 {/* Compact Balanced Grid */}
@@ -567,10 +557,10 @@ export default function HomePage() {
 
                 {/* Infinite Scroll Sentinel */}
                 {visibleCount < filteredModels.length && (
-                  <div ref={loadMoreRef} className="col-span-full w-full h-24 flex items-center justify-center pt-8">
-                    <div className="flex items-center gap-2 text-zinc-500 font-medium text-sm">
-                      <div className="w-4 h-4 rounded-full border-2 border-zinc-500 border-t-transparent animate-spin"></div>
-                      Cargando más cámaras...
+                  <div ref={loadMoreRef} className="col-span-full w-full h-16 flex items-center justify-center pt-4">
+                    <div className="flex items-center gap-2 text-zinc-500 font-medium text-xs">
+                      <div className="w-3.5 h-3.5 rounded-full border-2 border-zinc-500 border-t-transparent animate-spin"></div>
+                      Cargando más...
                     </div>
                   </div>
                 )}
@@ -626,38 +616,38 @@ export default function HomePage() {
               <span className="font-black text-white text-sm tracking-wider">Purple<span className="text-violet-500">69</span></span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-6 text-xs font-medium text-zinc-400">
+            <div className="flex flex-wrap items-center gap-5 text-xs font-medium text-zinc-400">
               <button onClick={() => setIsBuyTokensOpen(true)} className="hover:text-amber-400 transition cursor-pointer">
-                Comprar Tokens
+                Tokens
               </button>
               <button onClick={handleToggleFilterDrawer} className="hover:text-violet-400 transition cursor-pointer">
-                Filtros Avanzados
+                Filtros
               </button>
               <button 
                 onClick={() => setIsUnlockModalOpen(true)} 
                 className="hover:text-amber-400 transition flex items-center gap-1.5 text-zinc-400 cursor-pointer"
-                title="Desbloquear con clave de seguridad"
+                title="Clave de seguridad"
               >
                 <KeyRound className="w-3.5 h-3.5 text-amber-400" />
-                <span>Clave de Acceso</span>
+                <span>Clave</span>
               </button>
-              <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Política de Privacidad de Purple69: Todos los pagos son totalmente discretos, seguros y encriptados bajo protocolo SSL.'); }} className="hover:text-white transition">
-                Privacidad & Discreción
+              <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Política de Privacidad de Purple69: Pagos discretos y cifrado SSL.'); }} className="hover:text-white transition">
+                Privacidad
               </a>
-              <a href="#terms" onClick={(e) => { e.preventDefault(); alert('Términos y Condiciones: Acceso exclusivo para adultos mayores de 18 años (18+).'); }} className="hover:text-white transition">
+              <a href="#terms" onClick={(e) => { e.preventDefault(); alert('Términos: Acceso exclusivo para mayores de 18 años (18+).'); }} className="hover:text-white transition">
                 Términos 18+
               </a>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-zinc-600">
-            <p>© 2026 Purple69. Todos los derechos reservados. Plataforma profesional de transmisiones en vivo en alta definición.</p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
+            <p>© 2026 Purple69. Transmisiones HD en vivo.</p>
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1 text-emerald-500">
-                <ShieldCheck className="w-3.5 h-3.5" /> 256-Bit SSL Encrypted
+                <ShieldCheck className="w-3.5 h-3.5" /> SSL 256-Bit
               </span>
               <span>•</span>
-              <span>Cumplimiento RTA / 18 U.S.C. 2257</span>
+              <span>18 U.S.C. 2257</span>
             </div>
           </div>
         </div>

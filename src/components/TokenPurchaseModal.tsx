@@ -10,10 +10,10 @@ interface TokenPurchaseModalProps {
 }
 
 const TOKEN_PACKAGES = [
-  { id: 'p1', tokens: 100, bonus: 0, price: 9.99, popular: false, label: 'Paquete Básico' },
-  { id: 'p2', tokens: 500, bonus: 50, price: 39.99, popular: true, label: 'Paquete Popular ⭐' },
-  { id: 'p3', tokens: 1500, bonus: 250, price: 99.99, popular: false, label: 'Paquete VIP Gold' },
-  { id: 'p4', tokens: 5000, bonus: 1000, price: 299.99, popular: false, label: 'Paquete Ultra Diamond' },
+  { id: 'p1', tokens: 100, bonus: 0, price: 9.99, popular: false, label: 'Básico' },
+  { id: 'p2', tokens: 500, bonus: 50, price: 39.99, popular: true, label: 'Popular' },
+  { id: 'p3', tokens: 1500, bonus: 250, price: 99.99, popular: false, label: 'VIP Gold' },
+  { id: 'p4', tokens: 5000, bonus: 1000, price: 299.99, popular: false, label: 'Diamond' },
 ];
 
 export const TokenPurchaseModal: React.FC<TokenPurchaseModalProps> = ({
@@ -53,23 +53,23 @@ export const TokenPurchaseModal: React.FC<TokenPurchaseModalProps> = ({
         </button>
 
         {/* Modal Header */}
-        <div className="text-center space-y-1.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-violet-600 flex items-center justify-center mx-auto shadow-lg shadow-amber-950/40">
-            <Coins className="w-6 h-6 text-zinc-950" />
+        <div className="text-center space-y-1">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-violet-600 flex items-center justify-center mx-auto shadow-md shadow-amber-950/40">
+            <Coins className="w-5 h-5 text-zinc-950" />
           </div>
-          <h2 className="font-extrabold text-xl text-white">Comprar Tokens / Propinas</h2>
+          <h2 className="font-extrabold text-lg text-white">Comprar Tokens</h2>
           <p className="text-xs text-zinc-400">
-            Los tokens te permiten interactuar en vivo, activar juguetes Lovense y pedir shows privados.
+            Para propinas e interacción en vivo.
           </p>
         </div>
 
         {/* Success Alert */}
         {success ? (
           <div className="bg-emerald-950/80 border border-emerald-500/50 p-6 rounded-2xl text-center space-y-2 animate-in fade-in">
-            <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
-            <h3 className="font-extrabold text-base text-emerald-200">¡Compra Completada con Éxito!</h3>
+            <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
+            <h3 className="font-bold text-sm text-emerald-200">¡Compra completada!</h3>
             <p className="text-xs text-emerald-300">
-              Se han acreditado <strong>{selectedPack.tokens + selectedPack.bonus} Tokens</strong> a tu billetera.
+              +{selectedPack.tokens + selectedPack.bonus} Tokens acreditados.
             </p>
           </div>
         ) : (
@@ -90,7 +90,7 @@ export const TokenPurchaseModal: React.FC<TokenPurchaseModalProps> = ({
                   >
                     {pack.popular && (
                       <span className="absolute -top-2.5 right-3 bg-gradient-to-r from-amber-500 to-violet-600 text-zinc-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full shadow">
-                        MEJOR VALOR
+                        POPULAR
                       </span>
                     )}
 
@@ -101,8 +101,8 @@ export const TokenPurchaseModal: React.FC<TokenPurchaseModalProps> = ({
                         <span className="text-xs font-bold text-zinc-400">TK</span>
                       </div>
                       {pack.bonus > 0 && (
-                        <div className="text-[10px] font-extrabold text-emerald-400 flex items-center gap-1">
-                          <Zap className="w-3 h-3 text-amber-400" /> +{pack.bonus} TK GRATIS
+                        <div className="text-[10px] font-bold text-emerald-400 flex items-center gap-1">
+                          <Zap className="w-3 h-3 text-amber-400" /> +{pack.bonus} TK bonus
                         </div>
                       )}
                     </div>
