@@ -575,7 +575,7 @@ export const ModelRoomModal: React.FC<ModelRoomModalProps> = ({
                     <button
                       key={m.id}
                       onClick={() => onSelectModel?.(m)}
-                      className="flex items-center gap-2 bg-zinc-950 hover:bg-zinc-800/80 border border-zinc-800/80 p-1.5 rounded-xl shrink-0 transition text-left group cursor-pointer"
+                      className="flex items-center gap-2 bg-zinc-950 hover:bg-zinc-850 border border-violet-600/70 hover:border-violet-400 p-1.5 rounded-xl shrink-0 transition text-left group cursor-pointer shadow-xs shadow-violet-950/20"
                     >
                       <div className="relative w-8 h-8 rounded-full overflow-hidden border border-zinc-700 shrink-0">
                         <img

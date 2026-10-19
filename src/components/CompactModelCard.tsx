@@ -20,9 +20,9 @@ export const CompactModelCard: React.FC<CompactModelCardProps> = memo(({
   return (
     <div
       onClick={() => onSelectModel(model)}
-      className="group bg-zinc-950 border border-zinc-850 hover:border-violet-500/50 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-violet-950/20 transition-all duration-200 cursor-pointer flex flex-col relative transform-gpu"
+      className="group bg-zinc-950 border-2 border-violet-600 hover:border-violet-400 rounded-xl overflow-hidden shadow-md shadow-violet-950/30 hover:shadow-lg hover:shadow-violet-600/25 transition-all duration-200 cursor-pointer flex flex-col relative transform-gpu"
     >
-      {/* Media Snapshot (Unobstructed) */}
+      {/* Media Snapshot (Visibilidad 100% despejada de la imagen) */}
       <div className="relative aspect-[4/3] bg-zinc-950 overflow-hidden">
         <img
           src={model.snapshotUrl}
@@ -37,7 +37,7 @@ export const CompactModelCard: React.FC<CompactModelCardProps> = memo(({
 
         {/* Top Minimal Live Dot */}
         <div className="absolute top-2 left-2 flex items-center gap-1 z-10">
-          <span className="bg-red-600/90 text-white font-black text-[9px] uppercase px-1.5 py-0.5 rounded flex items-center gap-1 shadow-xs">
+          <span className="bg-red-600/90 text-white font-extrabold text-[9px] uppercase px-1.5 py-0.5 rounded flex items-center gap-1 shadow-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             LIVE
           </span>
@@ -45,7 +45,7 @@ export const CompactModelCard: React.FC<CompactModelCardProps> = memo(({
 
         {/* Viewers & Fav (Top Right) */}
         <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
-          <span className="bg-black/60 backdrop-blur-xs text-zinc-200 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+          <span className="bg-black/65 backdrop-blur-xs text-zinc-100 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 shadow-xs">
             <Eye className="w-2.5 h-2.5 text-violet-400" />
             {model.viewersCount > 999 ? `${(model.viewersCount / 1000).toFixed(1)}k` : model.viewersCount}
           </span>
@@ -71,10 +71,10 @@ export const CompactModelCard: React.FC<CompactModelCardProps> = memo(({
         </div>
       </div>
 
-      {/* Clean Compact Footer */}
-      <div className="p-2.5 bg-zinc-950 flex flex-col gap-0.5 border-t border-zinc-900">
+      {/* Clean Compact Footer con separador púrpura sutil */}
+      <div className="p-2.5 bg-zinc-950 flex flex-col gap-0.5 border-t border-violet-900/30">
         <div className="flex items-center justify-between gap-1">
-          <span className="font-bold text-xs text-white truncate group-hover:text-violet-400 transition-colors">
+          <span className="font-bold text-xs text-white truncate group-hover:text-violet-300 transition-colors">
             {model.displayName}
           </span>
           {model.isLovense && (
@@ -83,7 +83,7 @@ export const CompactModelCard: React.FC<CompactModelCardProps> = memo(({
             </span>
           )}
         </div>
-        <div className="text-[10px] text-zinc-400 truncate flex items-center gap-1">
+        <div className="text-[10px] text-zinc-400 truncate flex items-center gap-1 font-medium">
           <span>{model.countryCode ? model.countryCode.toUpperCase() : model.country}</span>
           <span className="text-zinc-600">·</span>
           <span>{model.tokensPerMin} TK/m</span>

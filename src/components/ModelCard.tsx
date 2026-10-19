@@ -101,15 +101,33 @@ export const ModelCard: React.FC<ModelCardProps> = memo(({
     ? Math.min(100, Math.round(((model.goalCurrent || 0) / model.goalTarget) * 100))
     : 0;
 
+  // Formateo y optimización concisa del texto de la tarjeta
+  const optimizedTopic = React.useMemo(() => {
+    if (!model.topic || model.topic.trim().length === 0) {
+      return `${model.country} · ${model.tokensPerMin} TK/m`;
+    }
+    let clean = model.topic
+      .replace(/([🔥⚡❤️⭐💋✨💎])\1+/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (clean.length > 8 && clean === clean.toUpperCase()) {
+      clean = clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
+    }
+    if (clean.length > 40) {
+      clean = clean.slice(0, 38).trim() + '...';
+    }
+    return clean;
+  }, [model.topic, model.country, model.tokensPerMin]);
+
   return (
     <div
       ref={cardRef}
       onClick={() => onSelectModel(model)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="group bg-zinc-950 border border-zinc-850 hover:border-violet-500/50 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-violet-950/20 transition-all duration-200 cursor-pointer flex flex-col relative transform-gpu"
+      className="group bg-zinc-950 border-2 border-violet-600 hover:border-violet-400 rounded-2xl overflow-hidden shadow-lg shadow-violet-950/40 hover:shadow-xl hover:shadow-violet-600/25 transition-all duration-200 cursor-pointer flex flex-col relative transform-gpu"
     >
-      {/* Top Media Area (100% clear visibility) */}
+      {/* Top Media Area (100% visibilidad limpia de la imagen) */}
       <div className="relative aspect-[4/3] bg-zinc-950 overflow-hidden">
         {/* Snapshot Image */}
         <img
@@ -136,29 +154,29 @@ export const ModelCard: React.FC<ModelCardProps> = memo(({
         {/* Minimal Gradient for Contrast */}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-transparent to-black/30 pointer-events-none" />
 
-        {/* Top Minimal Live Dot (Top Left) */}
+        {/* Badges superiores sobre la imagen: LIVE y HD optimizados */}
         <div className="absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5">
-          <span className="bg-red-600/90 text-white font-black text-[10px] uppercase px-2 py-0.5 rounded flex items-center gap-1 shadow-sm backdrop-blur-xs">
+          <span className="bg-red-600/90 text-white font-extrabold text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-md flex items-center gap-1 shadow-sm backdrop-blur-xs">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             LIVE
           </span>
           {model.isHd && (
-            <span className="text-[9px] font-bold text-amber-400 bg-black/60 backdrop-blur-xs px-1.5 py-0.5 rounded border border-amber-500/30">
+            <span className="text-[9px] font-black text-amber-400 bg-black/60 backdrop-blur-xs px-1.5 py-0.5 rounded-md border border-amber-500/30">
               HD
             </span>
           )}
         </div>
 
-        {/* Top Right: Viewers Count & Discreet Favorite */}
+        {/* Indicador de Espectadores y Favorito (Top Right) */}
         <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
-          <span className="bg-black/60 backdrop-blur-md text-zinc-200 text-[11px] font-bold px-2 py-0.5 rounded border border-white/10 flex items-center gap-1">
+          <span className="bg-black/65 backdrop-blur-md text-zinc-100 text-[11px] font-bold px-2 py-0.5 rounded-md border border-white/10 flex items-center gap-1 shadow-sm">
             <Eye className="w-3 h-3 text-violet-400" />
             {model.viewersCount > 999 ? `${(model.viewersCount / 1000).toFixed(1)}k` : model.viewersCount}
           </span>
 
           <button
             onClick={(e) => onToggleFavorite(e, model)}
-            className={`w-7 h-7 flex items-center justify-center rounded backdrop-blur-md transition ${
+            className={`w-7 h-7 flex items-center justify-center rounded-md backdrop-blur-md transition ${
               isFavorite
                 ? 'bg-violet-600 text-white'
                 : 'bg-black/50 text-zinc-300 hover:text-white hover:bg-black/80'
@@ -169,14 +187,14 @@ export const ModelCard: React.FC<ModelCardProps> = memo(({
           </button>
         </div>
 
-        {/* Audio Toggle when active */}
+        {/* Control de Audio cuando el video está activo */}
         {(isHovered || isActive) && model.videoUrl && (
           <button
             onClick={(e) => {
               e.stopPropagation();
               setIsMuted(!isMuted);
             }}
-            className="absolute bottom-2.5 right-2.5 p-1.5 rounded bg-black/70 backdrop-blur-md text-zinc-300 hover:text-white z-10 border border-white/10"
+            className="absolute bottom-2.5 right-2.5 p-1.5 rounded-md bg-black/70 backdrop-blur-md text-zinc-300 hover:text-white z-10 border border-white/10"
             title={isMuted ? 'Activar sonido' : 'Silenciar'}
           >
             {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-violet-400" />}
@@ -184,9 +202,9 @@ export const ModelCard: React.FC<ModelCardProps> = memo(({
         )}
       </div>
 
-      {/* Clean Uncluttered Info Body (below thumbnail, leaving image 100% visible) */}
-      <div className="p-3 bg-zinc-950/95 flex items-start gap-2.5 border-t border-zinc-900">
-        <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1 ring-zinc-800">
+      {/* Info Body: borde superior con tono púrpura y textos optimizados */}
+      <div className="p-3 bg-zinc-950/95 flex items-start gap-2.5 border-t border-violet-900/30">
+        <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 ring-1 ring-violet-500/30">
           <img
             src={model.avatarUrl}
             alt={model.displayName}
@@ -198,7 +216,7 @@ export const ModelCard: React.FC<ModelCardProps> = memo(({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-1">
-            <span className="font-bold text-sm text-white truncate group-hover:text-violet-400 transition-colors">
+            <span className="font-bold text-sm text-white truncate group-hover:text-violet-300 transition-colors">
               {model.displayName}
             </span>
             <div className="flex items-center gap-1 shrink-0">
@@ -207,12 +225,12 @@ export const ModelCard: React.FC<ModelCardProps> = memo(({
                   <Zap className="w-3 h-3 fill-amber-400" />
                 </span>
               )}
-              <span className="text-[11px] text-zinc-500 font-medium">({model.age})</span>
+              <span className="text-[11px] text-zinc-400 font-medium">({model.age})</span>
             </div>
           </div>
 
-          <p className="text-xs text-zinc-400 truncate mt-0.5">
-            {model.topic || `${model.country} · ${model.tokensPerMin} TK/m`}
+          <p className="text-xs text-zinc-400 truncate mt-0.5 font-medium">
+            {optimizedTopic}
           </p>
         </div>
       </div>
