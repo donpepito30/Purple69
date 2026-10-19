@@ -5,13 +5,45 @@ import crypto from 'crypto';
 const app = express();
 const PORT = 3000;
 
+app.disable('x-powered-by');
+
+// Cabeceras HTTP de Seguridad Estricta (Anti-Clickjacking, Anti-Sniffing, Anti-IFrame Hijack)
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 
 const CACHE = new Map<string, { data: any[], timestamp: number }>();
 
+// Anti-Scraping Rate Limiter por IP
+const modelRequestCounts = new Map<string, { count: number; resetAt: number }>();
+function isScraperRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = modelRequestCounts.get(ip);
+  if (!entry || now > entry.resetAt) {
+    modelRequestCounts.set(ip, { count: 1, resetAt: now + 60000 });
+    return false;
+  }
+  if (entry.count > 120) {
+    return true;
+  }
+  entry.count++;
+  return false;
+}
+
 // API: /api/models
 app.get('/api/models', async (req, res) => {
+  const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown';
+  if (isScraperRateLimited(clientIp)) {
+    return res.status(429).json({ error: 'Límite de peticiones excedido por protección anti-scraping' });
+  }
   try {
     const targetUrl = new URL('https://go.whitetrafsa.com/api/models');
     // Forward all query parameters
@@ -126,18 +158,48 @@ app.get('/api/models', async (req, res) => {
   const MASTER_AUTH_SALT = "purple69_master_auth_salt_2026_x99";
   const MASTER_AUTH_HASH = "af08e69f734bf01f3feb904b52d48c40ac4a4d8a4889f18e8a65f5dfa03b1790";
 
+  // Rastreador de intentos fallidos por IP (Defensa Anti-Fuerza Bruta)
+  const failedAuthAttempts = new Map<string, { count: number; lockUntil: number }>();
+
   app.post('/api/auth/verify-master', (req, res) => {
     try {
+      const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown';
+      const now = Date.now();
+      const tracker = failedAuthAttempts.get(clientIp);
+
+      if (tracker && tracker.lockUntil > now) {
+        const remainingSec = Math.ceil((tracker.lockUntil - now) / 1000);
+        return res.status(429).json({
+          authorized: false,
+          error: `IP bloqueada temporalmente por exceso de intentos (${remainingSec}s restantes).`
+        });
+      }
+
       const { key } = req.body || {};
       if (!key || typeof key !== 'string') {
         return res.status(400).json({ authorized: false, error: 'Clave requerida' });
       }
       const sanitized = key.trim();
       const hash = crypto.createHash('sha256').update(`${MASTER_AUTH_SALT}:${sanitized}`).digest('hex');
+      
       if (hash === MASTER_AUTH_HASH) {
+        failedAuthAttempts.delete(clientIp);
         return res.json({ authorized: true, message: 'Acceso maestro concedido' });
       }
-      return res.status(401).json({ authorized: false, error: 'Clave de seguridad incorrecta' });
+
+      // Registrar fallo y aplicar bloqueo exponencial tras 5 intentos
+      const currentFailures = (tracker?.count || 0) + 1;
+      if (currentFailures >= 5) {
+        failedAuthAttempts.set(clientIp, { count: currentFailures, lockUntil: now + 60000 }); // 60s
+      } else {
+        failedAuthAttempts.set(clientIp, { count: currentFailures, lockUntil: 0 });
+      }
+
+      return res.status(401).json({ 
+        authorized: false, 
+        error: 'Clave de seguridad incorrecta',
+        remainingAttempts: Math.max(0, 5 - currentFailures)
+      });
     } catch (e) {
       return res.status(500).json({ authorized: false, error: 'Error interno de autenticación' });
     }

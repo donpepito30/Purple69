@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --target=es2022 --format=esm --packages=external --sourcemap --outfile=dist/server.js && esbuild worker.ts --bundle --target=es2022 --format=esm --outfile=dist/_worker.js",
+    "build": "vite build && esbuild server.ts --bundle --target=es2022 --format=esm --packages=external --outfile=dist/server.js && esbuild worker.ts --bundle --target=es2022 --format=esm --outfile=dist/_worker.js",
     "start": "NODE_ENV=production node dist/server.js",
     "deploy": "echo 'Build listo para despliegue'"
   },

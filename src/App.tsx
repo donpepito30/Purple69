@@ -12,6 +12,7 @@ import { FilterDrawer } from '@/components/FilterDrawer';
 import { TokenPurchaseModal } from '@/components/TokenPurchaseModal';
 import { SecurityGate } from '@/components/SecurityGate';
 import { evaluateSecurityState, SecurityState } from '@/lib/security';
+import { initAntiTheftProtection } from '@/lib/antiTheft';
 import {
   Flame,
   Radio,
@@ -199,6 +200,14 @@ export default function HomePage() {
 
     return () => clearInterval(timer);
   }, []);
+
+  // Anti-Theft & Content Protection Shield
+  useEffect(() => {
+    const cleanup = initAntiTheftProtection({
+      isMaster: securityState.isMaster
+    });
+    return cleanup;
+  }, [securityState.isMaster]);
 
   // Auto-select a random live model upon landing (only if trial is started or master unlocked)
   useEffect(() => {

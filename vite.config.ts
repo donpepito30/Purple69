@@ -13,5 +13,17 @@ export default defineConfig({
     port: 3000,
     host: '0.0.0.0',
     hmr: false
+  },
+  build: {
+    sourcemap: false,
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        compact: true
+      }
+    }
+  },
+  esbuild: {
+    legalComments: 'none'
   }
 });
