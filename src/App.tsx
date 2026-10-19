@@ -10,6 +10,8 @@ import { CompactModelCard } from '@/components/CompactModelCard';
 import { ModelRoomModal } from '@/components/ModelRoomModal';
 import { FilterDrawer } from '@/components/FilterDrawer';
 import { TokenPurchaseModal } from '@/components/TokenPurchaseModal';
+import { SecurityGate } from '@/components/SecurityGate';
+import { evaluateSecurityState, SecurityState } from '@/lib/security';
 import {
   Flame,
   Radio,
@@ -27,7 +29,8 @@ import {
   Loader2,
   Shuffle,
   ChevronDown,
-  SlidersHorizontal
+  SlidersHorizontal,
+  KeyRound
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -43,6 +46,10 @@ export default function HomePage() {
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [isBuyTokensOpen, setIsBuyTokensOpen] = useState(false);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  // Security Access & Trial State
+  const [securityState, setSecurityState] = useState<SecurityState>(() => evaluateSecurityState());
+  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
 
   // Filter State
   const [filters, setFilters] = useState<FilterState>({
@@ -173,14 +180,41 @@ export default function HomePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-select a random live model upon landing
+  // Periodic Security Evaluation ticker (checks trial expiration every second)
   useEffect(() => {
-    if (isMounted && models.length > 0 && !hasAutoSelectedRef.current && !selectedModel) {
+    setSecurityState(evaluateSecurityState());
+
+    const timer = setInterval(() => {
+      setSecurityState((prev) => {
+        const next = evaluateSecurityState();
+        if (next.status === 'expired' && prev.status !== 'expired') {
+          // Instantly close stream modal when trial ends
+          setSelectedModel(null);
+          setIsFilterDrawerOpen(false);
+          setIsBuyTokensOpen(false);
+        }
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Auto-select a random live model upon landing (only if trial is started or master unlocked)
+  useEffect(() => {
+    if (
+      isMounted &&
+      models.length > 0 &&
+      !hasAutoSelectedRef.current &&
+      !selectedModel &&
+      securityState.status !== 'gate' &&
+      securityState.status !== 'expired'
+    ) {
       hasAutoSelectedRef.current = true;
       const randomIndex = Math.floor(Math.random() * models.length);
       setSelectedModel(models[randomIndex]);
     }
-  }, [models, isMounted, selectedModel]);
+  }, [models, isMounted, selectedModel, securityState.status]);
 
   // Save tokens to localStorage
   useEffect(() => {
@@ -331,6 +365,16 @@ export default function HomePage() {
         onToggleFilterDrawer={handleToggleFilterDrawer}
         favoriteModels={favoriteModelObjects}
         onSelectModel={handleSelectModel}
+        onOpenMasterUnlock={() => setIsUnlockModalOpen(true)}
+        isMasterUnlocked={securityState.isMaster}
+      />
+
+      {/* Security Gate & Trial Access Control */}
+      <SecurityGate
+        securityState={securityState}
+        onStateChange={setSecurityState}
+        isUnlockModalOpen={isUnlockModalOpen}
+        setIsUnlockModalOpen={setIsUnlockModalOpen}
       />
 
       {/* Category Pills Bar */}
@@ -529,7 +573,7 @@ export default function HomePage() {
       </main>
 
       {/* Model Room Stream Overlay Modal */}
-      {selectedModel && (
+      {selectedModel && securityState.status !== 'expired' && securityState.status !== 'gate' && (
         <ModelRoomModal
           key={selectedModel.id}
           model={selectedModel}
@@ -574,11 +618,19 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-6 text-xs font-medium text-zinc-400">
-              <button onClick={() => setIsBuyTokensOpen(true)} className="hover:text-amber-400 transition">
+              <button onClick={() => setIsBuyTokensOpen(true)} className="hover:text-amber-400 transition cursor-pointer">
                 Comprar Tokens
               </button>
-              <button onClick={handleToggleFilterDrawer} className="hover:text-violet-400 transition">
+              <button onClick={handleToggleFilterDrawer} className="hover:text-violet-400 transition cursor-pointer">
                 Filtros Avanzados
+              </button>
+              <button 
+                onClick={() => setIsUnlockModalOpen(true)} 
+                className="hover:text-amber-400 transition flex items-center gap-1.5 text-zinc-400 cursor-pointer"
+                title="Desbloquear con clave de seguridad"
+              >
+                <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                <span>Clave de Acceso</span>
               </button>
               <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Política de Privacidad de Purple69: Todos los pagos son totalmente discretos, seguros y encriptados bajo protocolo SSL.'); }} className="hover:text-white transition">
                 Privacidad & Discreción
@@ -603,60 +655,62 @@ export default function HomePage() {
       </footer>
 
       {/* Mobile Fixed Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-900 pb-safe block md:hidden shadow-[0_-8px_20px_rgba(0,0,0,0.6)]">
-        <div className="grid grid-cols-4 items-center h-16 max-w-lg mx-auto">
-          {/* Tab 1: Cámaras (Home) */}
-          <button
-            onClick={() => {
-              setShowFavoritesOnly(false);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className={`flex flex-col items-center justify-center h-full transition-colors ${
-              !showFavoritesOnly ? 'text-violet-500' : 'text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <Radio className="w-5 h-5" />
-            <span className="text-[10px] font-bold mt-1 tracking-tight">Cámaras</span>
-          </button>
+      {securityState.status !== 'expired' && securityState.status !== 'gate' && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-900 pb-safe block md:hidden shadow-[0_-8px_20px_rgba(0,0,0,0.6)]">
+          <div className="grid grid-cols-4 items-center h-16 max-w-lg mx-auto">
+            {/* Tab 1: Cámaras (Home) */}
+            <button
+              onClick={() => {
+                setShowFavoritesOnly(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex flex-col items-center justify-center h-full transition-colors ${
+                !showFavoritesOnly ? 'text-violet-500' : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <Radio className="w-5 h-5" />
+              <span className="text-[10px] font-bold mt-1 tracking-tight">Cámaras</span>
+            </button>
 
-          {/* Tab 2: Favoritas */}
-          <button
-            onClick={() => {
-              setShowFavoritesOnly(true);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className={`flex flex-col items-center justify-center h-full transition-colors relative ${
-              showFavoritesOnly ? 'text-violet-500' : 'text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <Heart className={`w-5 h-5 ${favorites.length > 0 && showFavoritesOnly ? 'fill-violet-500' : ''}`} />
-            <span className="text-[10px] font-bold mt-1 tracking-tight">Favoritas</span>
-            {favorites.length > 0 && (
-              <span className="absolute top-2.5 right-6 w-4 h-4 rounded-full bg-violet-600 text-[9px] font-black text-white flex items-center justify-center shadow border border-zinc-950">
-                {favorites.length}
-              </span>
-            )}
-          </button>
+            {/* Tab 2: Favoritas */}
+            <button
+              onClick={() => {
+                setShowFavoritesOnly(true);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex flex-col items-center justify-center h-full transition-colors relative ${
+                showFavoritesOnly ? 'text-violet-500' : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <Heart className={`w-5 h-5 ${favorites.length > 0 && showFavoritesOnly ? 'fill-violet-500' : ''}`} />
+              <span className="text-[10px] font-bold mt-1 tracking-tight">Favoritas</span>
+              {favorites.length > 0 && (
+                <span className="absolute top-2.5 right-6 w-4 h-4 rounded-full bg-violet-600 text-[9px] font-black text-white flex items-center justify-center shadow border border-zinc-950">
+                  {favorites.length}
+                </span>
+              )}
+            </button>
 
-          {/* Tab 3: Filtros */}
-          <button
-            onClick={() => setIsFilterDrawerOpen(true)}
-            className="flex flex-col items-center justify-center h-full text-zinc-400 hover:text-zinc-200 transition-colors"
-          >
-            <SlidersHorizontal className="w-5 h-5" />
-            <span className="text-[10px] font-bold mt-1 tracking-tight">Filtros</span>
-          </button>
+            {/* Tab 3: Filtros */}
+            <button
+              onClick={() => setIsFilterDrawerOpen(true)}
+              className="flex flex-col items-center justify-center h-full text-zinc-400 hover:text-zinc-200 transition-colors"
+            >
+              <SlidersHorizontal className="w-5 h-5" />
+              <span className="text-[10px] font-bold mt-1 tracking-tight">Filtros</span>
+            </button>
 
-          {/* Tab 4: Comprar */}
-          <button
-            onClick={() => setIsBuyTokensOpen(true)}
-            className="flex flex-col items-center justify-center h-full text-zinc-400 hover:text-zinc-200 transition-colors"
-          >
-            <Coins className="w-5 h-5 text-amber-500" />
-            <span className="text-[10px] font-bold mt-1 tracking-tight">Comprar</span>
-          </button>
+            {/* Tab 4: Comprar */}
+            <button
+              onClick={() => setIsBuyTokensOpen(true)}
+              className="flex flex-col items-center justify-center h-full text-zinc-400 hover:text-zinc-200 transition-colors"
+            >
+              <Coins className="w-5 h-5 text-amber-500" />
+              <span className="text-[10px] font-bold mt-1 tracking-tight">Comprar</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
     </div>
   );

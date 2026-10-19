@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect, memo } from 'react';
-import { Search, Flame, Heart, Coins, SlidersHorizontal, X } from 'lucide-react';
+import { Search, Flame, Heart, Coins, SlidersHorizontal, X, Lock, ShieldCheck, KeyRound } from 'lucide-react';
 import { Gender, FilterState, Model } from '@/lib/types';
 
 interface NavbarProps {
@@ -12,6 +12,8 @@ interface NavbarProps {
   onToggleFilterDrawer: () => void;
   favoriteModels: Model[];
   onSelectModel: (model: Model) => void;
+  onOpenMasterUnlock?: () => void;
+  isMasterUnlocked?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = memo(({
@@ -22,6 +24,8 @@ export const Navbar: React.FC<NavbarProps> = memo(({
   onToggleFilterDrawer,
   favoriteModels,
   onSelectModel,
+  onOpenMasterUnlock,
+  isMasterUnlocked = false,
 }) => {
   const [showFavorites, setShowFavorites] = useState(false);
   const [localSearch, setLocalSearch] = useState(filters.search);
@@ -205,6 +209,28 @@ export const Navbar: React.FC<NavbarProps> = memo(({
                 </div>
               )}
             </div>
+
+            {/* Master Security Key Button */}
+            {onOpenMasterUnlock && (
+              <button
+                onClick={onOpenMasterUnlock}
+                className={`p-2.5 rounded-xl border transition flex items-center gap-1.5 cursor-pointer ${
+                  isMasterUnlocked
+                    ? 'bg-emerald-950/70 border-emerald-700/60 text-emerald-400 hover:bg-emerald-900/50'
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-amber-400 hover:border-zinc-700'
+                }`}
+                title={isMasterUnlocked ? 'Acceso Maestro Activo (Ilimitado)' : 'Ingresar Clave de Acceso'}
+              >
+                {isMasterUnlocked ? (
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <Lock className="w-4 h-4 text-amber-400" />
+                )}
+                <span className="text-[11px] font-bold hidden sm:inline">
+                  {isMasterUnlocked ? 'Maestro' : 'Clave'}
+                </span>
+              </button>
+            )}
 
             {/* Token Wallet */}
             <div className="flex items-center bg-zinc-900 rounded-xl p-1 border border-zinc-800">

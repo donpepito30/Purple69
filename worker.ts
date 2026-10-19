@@ -140,6 +140,44 @@ export default {
       }
     }
 
+    if (url.pathname === '/api/auth/verify-master') {
+      try {
+        let body: any = {};
+        if (request.method === 'POST') {
+          body = await request.json().catch(() => ({}));
+        }
+        const { key } = body;
+        if (!key || typeof key !== 'string') {
+          return new Response(JSON.stringify({ authorized: false, error: 'Clave requerida' }), {
+            status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+          });
+        }
+        const encoder = new TextEncoder();
+        const data = encoder.encode(`purple69_master_auth_salt_2026_x99:${key.trim()}`);
+        const hashBuf = await crypto.subtle.digest('SHA-256', data);
+        const hash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        if (hash === 'af08e69f734bf01f3feb904b52d48c40ac4a4d8a4889f18e8a65f5dfa03b1790') {
+          return new Response(JSON.stringify({ authorized: true, message: 'Acceso autorizado' }), {
+            status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+          });
+        }
+        return new Response(JSON.stringify({ authorized: false, error: 'Clave de seguridad incorrecta' }), {
+          status: 401, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ authorized: false, error: err.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    if (url.pathname === '/api/auth/server-time') {
+      return new Response(JSON.stringify({ serverTime: Date.now() }), {
+        status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
     if (env.ASSETS) {
       try {
         let response = await env.ASSETS.fetch(request);

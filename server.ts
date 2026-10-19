@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-// dotenv import removed
-// GoogleGenAI import removed
+import crypto from 'crypto';
 
 const app = express();
 const PORT = 3000;
@@ -121,6 +120,31 @@ app.get('/api/models', async (req, res) => {
       console.error('Error in Chat API:', error);
       res.json({ text: '¡Hola! Gracias por tu mensaje. ¡Disfruta el show en vivo!' });
     }
+  });
+
+  // --- SEGURIDAD: Rutas de autenticación y verificación de clave maestra ---
+  const MASTER_AUTH_SALT = "purple69_master_auth_salt_2026_x99";
+  const MASTER_AUTH_HASH = "af08e69f734bf01f3feb904b52d48c40ac4a4d8a4889f18e8a65f5dfa03b1790";
+
+  app.post('/api/auth/verify-master', (req, res) => {
+    try {
+      const { key } = req.body || {};
+      if (!key || typeof key !== 'string') {
+        return res.status(400).json({ authorized: false, error: 'Clave requerida' });
+      }
+      const sanitized = key.trim();
+      const hash = crypto.createHash('sha256').update(`${MASTER_AUTH_SALT}:${sanitized}`).digest('hex');
+      if (hash === MASTER_AUTH_HASH) {
+        return res.json({ authorized: true, message: 'Acceso maestro concedido' });
+      }
+      return res.status(401).json({ authorized: false, error: 'Clave de seguridad incorrecta' });
+    } catch (e) {
+      return res.status(500).json({ authorized: false, error: 'Error interno de autenticación' });
+    }
+  });
+
+  app.get('/api/auth/server-time', (req, res) => {
+    res.json({ serverTime: Date.now() });
   });
 
   // Vite middleware setup
@@ -366,6 +390,44 @@ export default {
           }
         });
       }
+    }
+
+    if (url.pathname === '/api/auth/verify-master') {
+      try {
+        let body: any = {};
+        if (request.method === 'POST') {
+          body = await request.json().catch(() => ({}));
+        }
+        const { key } = body;
+        if (!key || typeof key !== 'string') {
+          return new Response(JSON.stringify({ authorized: false, error: 'Clave requerida' }), {
+            status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+          });
+        }
+        const encoder = new TextEncoder();
+        const data = encoder.encode(`purple69_master_auth_salt_2026_x99:${key.trim()}`);
+        const hashBuf = await crypto.subtle.digest('SHA-256', data);
+        const hash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        if (hash === 'af08e69f734bf01f3feb904b52d48c40ac4a4d8a4889f18e8a65f5dfa03b1790') {
+          return new Response(JSON.stringify({ authorized: true, message: 'Acceso autorizado' }), {
+            status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+          });
+        }
+        return new Response(JSON.stringify({ authorized: false, error: 'Clave de seguridad incorrecta' }), {
+          status: 401, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ authorized: false, error: err.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    if (url.pathname === '/api/auth/server-time') {
+      return new Response(JSON.stringify({ serverTime: Date.now() }), {
+        status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
     }
 
     // Si la petición no es de API, delegarla a los assets estáticos de Cloudflare (y manejar React Router SPA)
